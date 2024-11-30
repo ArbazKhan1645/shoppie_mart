@@ -6,10 +6,9 @@ class SplashScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     int remainingDuration = SplashService.getRemainingDuration(5000);
     Future.delayed(Duration(milliseconds: remainingDuration), () {
-      Get.offNamed(Routes.PRODUCTS_HOME);
+      Get.offNamed(Routes.DASHBOARD);
     });
   }
 }

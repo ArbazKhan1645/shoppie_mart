@@ -22,12 +22,12 @@ class ProductsApiService {
     _client.close();
   }
 
-  Future<ProductResponse> fetchProductsFromAPi() async {
+  Future<ProductResponse> fetchProductsFromAPi(String url) async {
     try {
       if (!_appService.isConnected) {
         throw ApiException('No internet connection');
       }
-      final response = await retry(() => _makeRequest(),
+      final response = await retry(() => _makeRequest(url),
           retryIf: ApiConfig.shouldRetry,
           maxAttempts: ApiConfig.maxRetries,
           delayFactor: ApiConfig.retryDelay);
@@ -51,10 +51,10 @@ class ProductsApiService {
     }
   }
 
-  Future<http.Response> _makeRequest() async {
+  Future<http.Response> _makeRequest(String url) async {
     Map<String, String> _headers = {'Content-Type': 'application/json'};
     final response = await _client
-        .get(Uri.parse(ApiConfig.productbaseUrl), headers: _headers)
+        .get(Uri.parse(url), headers: _headers)
         .timeout(ApiConfig.timeout);
     ApiConfig.validateResponse(response);
     return response;

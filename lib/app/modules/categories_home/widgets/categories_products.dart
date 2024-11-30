@@ -3,16 +3,18 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shoppie_mart/app/commons/common_textfield.dart';
 import 'package:shoppie_mart/app/core/theme/styles_manager.dart';
-import 'package:shoppie_mart/app/modules/products_home/controllers/products_home_controller.dart';
+import 'package:shoppie_mart/app/modules/categories_home/controllers/categories_home_controller.dart';
 import 'package:shoppie_mart/app/modules/common_widgets/product_card.dart';
 
-class ProductsHomeView extends GetView<ProductsHomeController> {
-  const ProductsHomeView({super.key});
+class CategoriesProducts extends GetView<CategoriesHomeController> {
+  const CategoriesProducts({super.key, this.categoryUrl = ''});
+  final String categoryUrl;
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProductsHomeController>(
-        init: ProductsHomeController(),
+    return GetBuilder<CategoriesHomeController>(
+        init: CategoriesHomeController(),
+        initState: (_) => controller.fetchProducts(categoryUrl),
         builder: (controller) {
           return Scaffold(
             backgroundColor: Colors.white,
@@ -33,9 +35,21 @@ class ProductsHomeView extends GetView<ProductsHomeController> {
   Widget _buildTitle(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
-      child: Text(
-        'Products',
-        style: getSemiBoldStyle(fontSize: 24),
+      child: Row(
+        children: [
+          IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              )),
+          Text(
+            'Products',
+            style: getSemiBoldStyle(fontSize: 24),
+          ),
+        ],
       ),
     );
   }
@@ -56,10 +70,10 @@ class ProductsHomeView extends GetView<ProductsHomeController> {
 
   Widget _buildProductList(BuildContext context) {
     return Obx(() {
-      if (controller.isLoading.value) {
+      if (controller.isLoadingProduct.value) {
         return _buildShimmerLoader();
       }
-      if (controller.errorMessage.value.isNotEmpty) {
+      if (controller.errorMessageProduct.value.isNotEmpty) {
         return _buildErrorMessage(controller.errorMessage.value);
       }
       return ListView.separated(

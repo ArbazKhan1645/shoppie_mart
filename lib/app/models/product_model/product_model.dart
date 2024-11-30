@@ -1,6 +1,5 @@
-
 class ProductResponse {
-   List<Product>? products;
+  List<Product>? products;
   final int? total;
   final int? skip;
   final int? limit;
@@ -101,7 +100,8 @@ class Product {
       meta: json['meta'] != null
           ? Meta.fromJson(json['meta'] as Map<String, dynamic>)
           : null,
-      images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      images:
+          (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
       thumbnail: json['thumbnail'] as String?,
     );
   }

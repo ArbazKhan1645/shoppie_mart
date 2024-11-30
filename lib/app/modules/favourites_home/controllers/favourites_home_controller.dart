@@ -1,23 +1,34 @@
 import 'package:get/get.dart';
+import 'package:shoppie_mart/app/get_services/fav_product_service/fav_pro_service.dart';
+import 'package:shoppie_mart/app/models/product_model/product_model.dart';
 
 class FavouritesHomeController extends GetxController {
-  //TODO: Implement FavouritesHomeController
+  final favoriteService = FavoriteService.to;
+  final RxList<Product> favorites = <Product>[].obs;
 
-  final count = 0.obs;
   @override
   void onInit() {
+    loadFavorites();
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+
+  void loadFavorites() {
+    favorites.value = favoriteService.getFavorites();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+
+  void toggleFavorite(Product product) {
+    if (favoriteService.isFavorite(product.id!)) {
+      favoriteService.removeFromFavorites(product.id!);
+    } else {
+      favoriteService.addToFavorites(product);
+    }
+    loadFavorites();
   }
 
-  void increment() => count.value++;
+  // Check if a product is favorite
+  bool isFavorite(int productId) {
+    return favoriteService.isFavorite(productId);
+  }
 }

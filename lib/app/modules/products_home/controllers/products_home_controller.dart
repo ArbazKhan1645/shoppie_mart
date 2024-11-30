@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:shoppie_mart/app/api_services/product_service/product_service.dart';
+import 'package:shoppie_mart/app/core/configs/api_configs.dart';
 import 'package:shoppie_mart/app/core/utils/api_exceptions.dart';
 import 'package:shoppie_mart/app/core/utils/logger.dart';
 import 'package:shoppie_mart/app/models/product_model/product_model.dart';
@@ -24,8 +25,8 @@ class ProductsHomeController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      final ProductResponse response =
-          await _productsApiService.fetchProductsFromAPi();
+      final ProductResponse response = await _productsApiService
+          .fetchProductsFromAPi(ApiConfig.productbaseUrl);
       products.value = response.products ?? [];
       filteredProducts.value = products;
     } on ApiException catch (e) {

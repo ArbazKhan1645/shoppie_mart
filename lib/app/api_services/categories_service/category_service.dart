@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:retry/retry.dart';
 import 'package:shoppie_mart/app/core/configs/api_configs.dart';
 import 'package:shoppie_mart/app/core/utils/api_exceptions.dart';
+import 'package:shoppie_mart/app/core/utils/logger.dart';
 import 'package:shoppie_mart/app/get_services/app_services/app_service.dart';
 import 'package:shoppie_mart/app/models/category_model/category_model.dart';
 import 'package:shoppie_mart/app/models/product_model/product_model.dart';
@@ -22,7 +23,7 @@ class CategoriesApiService {
     _client.close();
   }
 
-  Future<CategoryModel> fetchCategoriesFromAPi() async {
+  Future<List<CategoryModel>> fetchCategoriesFromAPi() async {
     try {
       if (!_appService.isConnected) {
         throw ApiException('No internet connection');
@@ -31,9 +32,13 @@ class CategoriesApiService {
           retryIf: ApiConfig.shouldRetry,
           maxAttempts: ApiConfig.maxRetries,
           delayFactor: ApiConfig.retryDelay);
-      final data = json.decode(response.body);
-      CategoryModel productResponse = CategoryModel.fromJson(data);
-      return productResponse;
+      final data = json.decode(response.body) as List<dynamic>;
+      AppLogger.info(data.toString());
+      List<CategoryModel> categories = data
+          .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+      AppLogger.info(categories.length.toString());
+      return categories;
     } on TimeoutException {
       throw ApiException('Request timed out');
     } on SocketException {
