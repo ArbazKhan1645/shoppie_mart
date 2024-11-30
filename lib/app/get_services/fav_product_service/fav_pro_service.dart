@@ -44,7 +44,6 @@ class FavoriteService extends GetxService {
     try {
       final List<dynamic>? storedFavorites = _storage.read(_favKey);
       if (storedFavorites == null) return [];
-      print(storedFavorites.length);
       return storedFavorites.map((json) => Product.fromJson(json)).toList();
     } catch (e) {
       AppLogger.error('Error getting favorites: $e');

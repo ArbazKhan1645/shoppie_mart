@@ -22,12 +22,3 @@ Future<void> prefetchProductThumbnail(List<String> posterPaths) async {
     }
   }
 }
-
-Future<void> prefetchMovieImage(String posterPaths) async {
-  final cacheManager = PersistentCacheManager();
-  final imageUrl = 'https://image.tmdb.org/t/p/w500$posterPaths';
-  final fileInfo = await cacheManager.getFileFromCache(imageUrl);
-  if (fileInfo == null) {
-    await cacheManager.downloadFile(imageUrl);
-  }
-}

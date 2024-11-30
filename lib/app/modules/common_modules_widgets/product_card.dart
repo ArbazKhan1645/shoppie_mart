@@ -5,9 +5,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shoppie_mart/app/core/managers/cache_images.dart';
-import 'package:shoppie_mart/app/get_services/fav_product_service/fav_pro_service.dart';
 import 'package:shoppie_mart/app/models/product_model/product_model.dart';
-import 'package:shoppie_mart/app/modules/common_widgets/details.dart';
+import 'package:shoppie_mart/app/modules/common_modules_widgets/details.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.product});
@@ -118,7 +117,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
 
-                // Subtitle Section
+
                 Text(
                   'By Apple',
                   style: GoogleFonts.poppins(

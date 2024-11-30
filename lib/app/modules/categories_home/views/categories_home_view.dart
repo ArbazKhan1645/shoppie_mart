@@ -77,14 +77,14 @@ class CategoriesHomeView extends GetView<CategoriesHomeController> {
                     categoryUrl: product.url ?? '', key: UniqueKey()));
               },
               child: Container(
-                child: Center(
-                  child: Text(product.url ?? ''),
-                ),
                 decoration: BoxDecoration(
                   image: DecorationImage(
                       image: NetworkImage(product.url.toString())),
                   color: index.isEven ? Colors.amber : Colors.red,
                   borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(product.url ?? ''),
                 ),
               ),
             );

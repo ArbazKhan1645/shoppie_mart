@@ -4,7 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:shoppie_mart/app/commons/common_textfield.dart';
 import 'package:shoppie_mart/app/core/theme/styles_manager.dart';
 import 'package:shoppie_mart/app/modules/products_home/controllers/products_home_controller.dart';
-import 'package:shoppie_mart/app/modules/common_widgets/product_card.dart';
+import 'package:shoppie_mart/app/modules/common_modules_widgets/product_card.dart';
 
 class ProductsHomeView extends GetView<ProductsHomeController> {
   const ProductsHomeView({super.key});

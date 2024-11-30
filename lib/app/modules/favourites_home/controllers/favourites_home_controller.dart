@@ -12,11 +12,9 @@ class FavouritesHomeController extends GetxController {
     super.onInit();
   }
 
-
   void loadFavorites() {
     favorites.value = favoriteService.getFavorites();
   }
-
 
   void toggleFavorite(Product product) {
     if (favoriteService.isFavorite(product.id!)) {
@@ -27,7 +25,6 @@ class FavouritesHomeController extends GetxController {
     loadFavorites();
   }
 
-  // Check if a product is favorite
   bool isFavorite(int productId) {
     return favoriteService.isFavorite(productId);
   }
