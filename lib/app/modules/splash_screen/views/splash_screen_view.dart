@@ -48,8 +48,8 @@ class SplashScreenView extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
           top: MediaQuery.of(context).size.height * 0.08,
-          left: 20,
-          right: 20,
+          left: MediaQuery.of(context).size.width * 0.10,
+          right: MediaQuery.of(context).size.width * 0.10,
           bottom: MediaQuery.of(context).size.height * 0.15),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

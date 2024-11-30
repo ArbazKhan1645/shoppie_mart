@@ -32,9 +32,7 @@ class ProductsApiService {
           maxAttempts: ApiConfig.maxRetries,
           delayFactor: ApiConfig.retryDelay);
       final data = json.decode(response.body);
-      AppLogger.info('message $data');
       ProductResponse productResponse = ProductResponse.fromJson(data);
-      AppLogger.info('message2');
       final productImage = productResponse.products
           ?.map((product) => product.thumbnail.toString())
           .toList();

@@ -48,7 +48,9 @@ class CategoriesHomeController extends GetxController {
     }
   }
 
+  RxString catSearching = ''.obs;
   void searchCategory(String query) {
+    catSearching.value = query;
     filteredCategories.value = categories
         .where((category) => category.name
             .toString()
@@ -64,7 +66,9 @@ class CategoriesHomeController extends GetxController {
     super.onClose();
   }
 
+  RxString searching = ''.obs;
   void searchProducts(String query) {
+    searching.value = query;
     filteredProducts.value = products
         .where((product) => product.title
             .toString()

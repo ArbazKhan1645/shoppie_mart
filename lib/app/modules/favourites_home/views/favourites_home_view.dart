@@ -9,8 +9,6 @@ class FavouritesHomeView extends GetView<FavouritesHomeController> {
   const FavouritesHomeView({super.key});
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FavouritesHomeController>(
-        init: FavouritesHomeController(),
-        builder: (controller) => const FavoriteScreen());
+    return const FavouritesProductsHomeView();
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class MyColors {
-  //common colors
   static const Color appColor = Color(0xFF00A69D);
   static const Color appColor1 = Color(0xFFCB90C7);
   static const Color lightBg = Color(0xFFF6FBFA);
@@ -61,11 +60,4 @@ class MyColors {
   static const Color textLightColor = Color(0xFF858585);
   static const Color lightContainerColor = Color(0xFFD9D9D9);
   static const Color lightButtonTextColor = Color(0xFFFFFFFF);
-
-  //how to use colors
-  // colorscheme.primary : for text and title
-  // colorscheme.secondary : for light text
-  // colorscheme.onPrimary : for text on buttons
-  // colorscheme.primaryContainer : for containers like text-fields, barbers card ,checkout etc ...
-  // colorscheme.secondaryContainer : for button colors
 }

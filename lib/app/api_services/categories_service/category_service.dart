@@ -33,7 +33,6 @@ class CategoriesApiService {
           maxAttempts: ApiConfig.maxRetries,
           delayFactor: ApiConfig.retryDelay);
       final data = json.decode(response.body) as List<dynamic>;
-      AppLogger.info(data.toString());
       List<CategoryModel> categories = data
           .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
           .toList();

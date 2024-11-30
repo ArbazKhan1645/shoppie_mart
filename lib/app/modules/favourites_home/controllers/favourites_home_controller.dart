@@ -4,7 +4,15 @@ import 'package:shoppie_mart/app/models/product_model/product_model.dart';
 
 class FavouritesHomeController extends GetxController {
   final favoriteService = FavoriteService.to;
-  final RxList<Product> favorites = <Product>[].obs;
+  RxList<Product> favorites = <Product>[].obs;
+  RxList<Product> filterFavorites = <Product>[].obs;
+
+  searchByTitle(String query) {
+    filterFavorites.value = favorites.where((product) {
+      return product.title!.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+    update();
+  }
 
   @override
   void onInit() {
@@ -14,6 +22,7 @@ class FavouritesHomeController extends GetxController {
 
   void loadFavorites() {
     favorites.value = favoriteService.getFavorites();
+    filterFavorites.value = favorites;
   }
 
   void toggleFavorite(Product product) {

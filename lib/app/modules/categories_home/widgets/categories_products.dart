@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shoppie_mart/app/commons/common_textfield.dart';
-import 'package:shoppie_mart/app/core/theme/styles_manager.dart';
+import 'package:shoppie_mart/app/commons/error_message_widget.dart';
+import 'package:shoppie_mart/app/commons/header.dart';
 import 'package:shoppie_mart/app/modules/categories_home/controllers/categories_home_controller.dart';
 import 'package:shoppie_mart/app/modules/common_modules_widgets/product_card.dart';
 
 class CategoriesProducts extends GetView<CategoriesHomeController> {
-  const CategoriesProducts({super.key, this.categoryUrl = ''});
+  const CategoriesProducts(this.slug, {super.key, this.categoryUrl = ''});
   final String categoryUrl;
+  final String slug;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +23,27 @@ class CategoriesProducts extends GetView<CategoriesHomeController> {
             body: SafeArea(
               child: Column(
                 children: [
-                  _buildTitle(context),
+                  CustomTitleBar(
+                      title: slug,
+                      onBackPressed: () {
+                        Get.back();
+                      }),
                   _buildSearchField(context),
+                  const SizedBox(height: 10),
+                  Obx(() {
+                    if (controller.searching.value.isEmpty) {
+                      return Container();
+                    }
+                    return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Text(
+                            '${controller.filteredProducts.length} Results Found',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ));
+                  }),
                   const SizedBox(height: 10),
                   Expanded(child: _buildProductList(context))
                 ],
@@ -30,28 +51,6 @@ class CategoriesProducts extends GetView<CategoriesHomeController> {
             ),
           );
         });
-  }
-
-  Widget _buildTitle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        children: [
-          IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
-          Text(
-            'Products',
-            style: getSemiBoldStyle(fontSize: 24),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildSearchField(BuildContext context) {
@@ -74,7 +73,17 @@ class CategoriesProducts extends GetView<CategoriesHomeController> {
         return _buildShimmerLoader();
       }
       if (controller.errorMessageProduct.value.isNotEmpty) {
-        return _buildErrorMessage(controller.errorMessage.value);
+        return ErrorMessageWidget(
+          message: controller.errorMessage.value,
+          onRetry: () {
+            controller.fetchProducts(categoryUrl);
+          },
+        );
+      }
+      if (controller.filteredProducts.isEmpty) {
+        return const Center(
+          child: Text('No Keyword data found'),
+        );
       }
       return ListView.separated(
         padding: const EdgeInsets.all(5.0),
@@ -102,9 +111,5 @@ class CategoriesProducts extends GetView<CategoriesHomeController> {
         );
       },
     );
-  }
-
-  Widget _buildErrorMessage(String message) {
-    return Center(child: Text(message));
   }
 }

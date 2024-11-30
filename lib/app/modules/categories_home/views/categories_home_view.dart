@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shoppie_mart/app/commons/common_textfield.dart';
-import 'package:shoppie_mart/app/core/theme/styles_manager.dart';
+import 'package:shoppie_mart/app/commons/error_message_widget.dart';
 import 'package:shoppie_mart/app/modules/categories_home/widgets/categories_products.dart';
 import '../controllers/categories_home_controller.dart';
 
@@ -22,6 +23,21 @@ class CategoriesHomeView extends GetView<CategoriesHomeController> {
                   _buildTitle(context),
                   _buildSearchField(context),
                   const SizedBox(height: 10),
+                  Obx(() {
+                    if (controller.catSearching.value.isEmpty) {
+                      return Container();
+                    }
+                    return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Text(
+                            '${controller.filteredCategories.length} Results Found',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ));
+                  }),
+                  const SizedBox(height: 10),
                   Expanded(child: _buildProductList(context))
                 ],
               ),
@@ -35,7 +51,10 @@ class CategoriesHomeView extends GetView<CategoriesHomeController> {
       padding: const EdgeInsets.all(15.0),
       child: Text(
         'Categories',
-        style: getSemiBoldStyle(fontSize: 24),
+        style: GoogleFonts.poppins(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -60,10 +79,20 @@ class CategoriesHomeView extends GetView<CategoriesHomeController> {
         return _buildShimmerLoader();
       }
       if (controller.errorMessage.value.isNotEmpty) {
-        return _buildErrorMessage(controller.errorMessage.value);
+        return ErrorMessageWidget(
+          message: controller.errorMessage.value,
+          onRetry: () {
+            controller.fetchCategories();
+          },
+        );
+      }
+      if (controller.filteredCategories.isEmpty) {
+        return const Center(
+          child: Text('No Keyword data found'),
+        );
       }
       return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 8, right: 8),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
@@ -74,19 +103,55 @@ class CategoriesHomeView extends GetView<CategoriesHomeController> {
             return GestureDetector(
               onTap: () {
                 Get.to(() => CategoriesProducts(
-                    categoryUrl: product.url ?? '', key: UniqueKey()));
+                      product.slug.toString(),
+                      categoryUrl: product.url ?? '',
+                      key: UniqueKey(),
+                    ));
               },
               child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(product.url.toString())),
-                  color: index.isEven ? Colors.amber : Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(product.url ?? ''),
-                ),
-              ),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: index.isEven
+                            ? const AssetImage('assets/images/cat2.png')
+                            : const AssetImage('assets/images/cat1.png'),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              const Color(0xFF0C0C0C).withOpacity(0.25),
+                              const Color(0xFF0C0C0C).withOpacity(0.25)
+                            ],
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              right: 10, left: 10, bottom: 20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name ?? '',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
             );
           },
         ),
@@ -95,22 +160,27 @@ class CategoriesHomeView extends GetView<CategoriesHomeController> {
   }
 
   Widget _buildShimmerLoader() {
-    return ListView.separated(
-      separatorBuilder: (context, index) => const SizedBox(height: 15),
-      padding: const EdgeInsets.all(15.0),
-      itemCount: 20,
-      itemBuilder: (context, index) {
-        return Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: Container(
-              width: double.infinity, height: 180, color: Colors.grey),
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+        padding: const EdgeInsets.all(5.0),
+        itemCount: 20,
+        itemBuilder: (context, index) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                width: double.infinity,
+                height: 180),
+          );
+        },
+      ),
     );
-  }
-
-  Widget _buildErrorMessage(String message) {
-    return Center(child: Text(message));
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shoppie_mart/app/commons/common_textfield.dart';
-import 'package:shoppie_mart/app/core/theme/styles_manager.dart';
+import 'package:shoppie_mart/app/commons/error_message_widget.dart';
 import 'package:shoppie_mart/app/modules/products_home/controllers/products_home_controller.dart';
 import 'package:shoppie_mart/app/modules/common_modules_widgets/product_card.dart';
 
@@ -22,6 +23,21 @@ class ProductsHomeView extends GetView<ProductsHomeController> {
                   _buildTitle(context),
                   _buildSearchField(context),
                   const SizedBox(height: 10),
+                  Obx(() {
+                    if (controller.searching.value.isEmpty) {
+                      return Container();
+                    }
+                    return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Text(
+                            '${controller.filteredProducts.length} Results Found',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ));
+                  }),
+                  const SizedBox(height: 10),
                   Expanded(child: _buildProductList(context))
                 ],
               ),
@@ -35,7 +51,10 @@ class ProductsHomeView extends GetView<ProductsHomeController> {
       padding: const EdgeInsets.all(15.0),
       child: Text(
         'Products',
-        style: getSemiBoldStyle(fontSize: 24),
+        style: GoogleFonts.poppins(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -60,7 +79,17 @@ class ProductsHomeView extends GetView<ProductsHomeController> {
         return _buildShimmerLoader();
       }
       if (controller.errorMessage.value.isNotEmpty) {
-        return _buildErrorMessage(controller.errorMessage.value);
+        return ErrorMessageWidget(
+          message: controller.errorMessage.value,
+          onRetry: () {
+            controller.fetchProducts();
+          },
+        );
+      }
+      if (controller.filteredProducts.isEmpty) {
+        return const Center(
+          child: Text('No Keyword data found'),
+        );
       }
       return ListView.separated(
         padding: const EdgeInsets.all(5.0),
@@ -88,9 +117,5 @@ class ProductsHomeView extends GetView<ProductsHomeController> {
         );
       },
     );
-  }
-
-  Widget _buildErrorMessage(String message) {
-    return Center(child: Text(message));
   }
 }

@@ -37,10 +37,14 @@ class ProductsHomeController extends GetxController {
       AppLogger.error('Unexpected error: $e');
     } finally {
       isLoading.value = false;
+      update();
     }
   }
 
+  RxString searching = ''.obs;
+
   void searchProducts(String query) {
+    searching.value = query;
     filteredProducts.value = products
         .where((product) => product.title
             .toString()
